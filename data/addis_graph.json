@@ -1,0 +1,7 @@
+{
+  "piassa": { "name": "Piassa", "lat": 9.016, "lon": 38.746, "neighbors": [ {"id":"meskel","cost":2}, {"id":"kazanchis","cost":3} ] },
+  "meskel": { "name": "Meskel Square", "lat": 9.021, "lon": 38.747, "neighbors": [ {"id":"piassa","cost":2}, {"id":"kazanchis","cost":2}, {"id":"megenagna","cost":4} ] },
+  "kazanchis": { "name": "Kazanchis", "lat": 9.022, "lon": 38.749, "neighbors": [ {"id":"piassa","cost":3}, {"id":"meskel","cost":2}, {"id":"bole","cost":5} ] },
+  "megenagna": { "name": "Megenagna", "lat": 9.033, "lon": 38.761, "neighbors": [ {"id":"meskel","cost":4}, {"id":"bole","cost":3} ] },
+  "bole": { "name": "Bole", "lat": 9.010, "lon": 38.781, "neighbors": [ {"id":"kazanchis","cost":5}, {"id":"megenagna","cost":3} ] }
+}

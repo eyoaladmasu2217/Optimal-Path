@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Optimal Path - Addis Ababa</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Optimal Path (Addis Ababa)</h1>
+
+      <div class="controls">
+        <label>Start
+          <select id="start"></select>
+        </label>
+        <label>Goal
+          <select id="goal"></select>
+        </label>
+        <label>Algorithm
+          <select id="algorithm">
+            <option value="astar">A* Search</option>
+            <option value="greedy">Greedy Best-First</option>
+            <option value="dfs">Depth-First Search</option>
+          </select>
+        </label>
+        <button id="run">Find Route</button>
+      </div>
+
+      <div id="results">
+        <h2>Result</h2>
+        <div id="path"></div>
+        <div id="cost"></div>
+      </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
