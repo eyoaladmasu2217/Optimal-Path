@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Optimal Path - Addis Ababa</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+e2z8gkP9w0bYfJ+3zY1kGQhQ2KtY3/8m+9ZQ3qR0=" crossorigin=""/>
   </head>
   <body>
     <div class="container">
@@ -24,7 +25,12 @@
           </select>
         </label>
         <button id="run">Find Route</button>
+        <div style="margin-left:10px; font-size:13px">
+          <div>Or click map to choose Start (1st click) and Goal (2nd click)</div>
+        </div>
       </div>
+
+      <div id="map" style="height:400px; margin-bottom:12px;"></div>
 
       <div id="results">
         <h2>Result</h2>
@@ -33,6 +39,7 @@
       </div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j8kGkE6H6Y3z7+6k1S6s3n8p2Y5rj5oXf3zB0+k=" crossorigin=""></script>
     <script src="/static/app.js"></script>
   </body>
 </html>

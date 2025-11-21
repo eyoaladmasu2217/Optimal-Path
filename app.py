@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-from graph import load_graph
+from graph import load_graph, nearest_node
 import algorithms
 
 app = Flask(__name__)
@@ -30,15 +30,31 @@ def route():
     goal = body.get('goal')
     algo = body.get('algorithm', 'astar')
 
-    if start not in GRAPH or goal not in GRAPH:
+    # allow start/goal to be provided as coordinates {lat, lon} or as node id
+    def resolve(node_spec):
+        if isinstance(node_spec, dict):
+            lat = node_spec.get('lat')
+            lon = node_spec.get('lon')
+            if lat is None or lon is None:
+                return None
+            return nearest_node(GRAPH, float(lat), float(lon))
+        return node_spec
+
+    start_resolved = resolve(start)
+    goal_resolved = resolve(goal)
+
+    if start_resolved is None or goal_resolved is None:
+        return jsonify({'error': 'start or goal node not found / invalid coordinates'}), 400
+
+    if start_resolved not in GRAPH or goal_resolved not in GRAPH:
         return jsonify({'error': 'start or goal node not found'}), 400
 
     if algo == 'astar':
-        path, cost = algorithms.a_star(GRAPH, start, goal)
+        path, cost = algorithms.a_star(GRAPH, start_resolved, goal_resolved)
     elif algo == 'greedy':
-        path, cost = algorithms.greedy_best_first(GRAPH, start, goal)
+        path, cost = algorithms.greedy_best_first(GRAPH, start_resolved, goal_resolved)
     elif algo == 'dfs':
-        path, cost = algorithms.dfs(GRAPH, start, goal)
+        path, cost = algorithms.dfs(GRAPH, start_resolved, goal_resolved)
     else:
         return jsonify({'error': 'unknown algorithm'}), 400
 

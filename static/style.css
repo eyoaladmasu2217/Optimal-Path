@@ -6,3 +6,6 @@ body { font-family: Arial, sans-serif; background:#f6f8fa; color:#222; }
 button { padding:8px 12px; cursor:pointer; }
 #results { background:#f3f6f9; padding:12px; border-radius:6px; }
 #path { margin:8px 0; }
+
+/* map container adjustments */
+#map { border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
