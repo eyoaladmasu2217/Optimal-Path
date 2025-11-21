@@ -20,14 +20,4 @@ python app.py
 
 3. Open your browser to `http://127.0.0.1:5000/`.
 
-## Files
 
-- `app.py` - Flask app and API endpoints
-- `algorithms.py` - implementations of A*, Greedy Best-First, and DFS
-- `data/addis_graph.json` - small sample graph with nodes and neighbors
-- `templates/index.html` and `static/*` - frontend
-
-## Notes
-
-- The sample graph is minimal. For a realistic map, replace `data/addis_graph.json` with data extracted from OSM or your routing graph.
-- Heuristic uses Euclidean distance on lat/lon (approximate). For better accuracy use haversine or proper projection.
