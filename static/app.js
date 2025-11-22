@@ -34,6 +34,7 @@ async function findRoute(){
 }
 
 document.getElementById('run').addEventListener('click', findRoute);
+document.getElementById('clear').addEventListener('click', clearRoute);
 fetchNodes();
 
 // --- Leaflet map integration ---
@@ -48,18 +49,31 @@ let startMarker = null;
 let goalMarker = null;
 let routeLayer = null;
 
+// Add a small legend control to the map
+const legend = L.control({position: 'topright'});
+legend.onAdd = function () {
+  const div = L.DomUtil.create('div', 'map-legend');
+  div.innerHTML = `
+    <div class="item"><span class="legend-swatch" style="background:green"></span> Start</div>
+    <div class="item"><span class="legend-swatch" style="background:red"></span> Goal</div>
+    <div class="item"><span class="legend-swatch" style="background:blue"></span> Route</div>
+  `;
+  return div;
+};
+legend.addTo(map);
+
 map.on('click', function(e){
   clickCount++;
   if(clickCount === 1){
     if(startMarker) map.removeLayer(startMarker);
-    startMarker = L.marker(e.latlng, {icon: L.icon({iconUrl:'/static/marker-icon.png', iconSize:[25,41], iconAnchor:[12,41]})}).addTo(map).bindPopup('Start');
+    startMarker = L.circleMarker(e.latlng, {radius:8, color:'green', fillColor:'green', fillOpacity:0.8}).addTo(map).bindPopup('Start');
     // set start select to blank (so route uses coord)
     document.getElementById('start').value = '';
     startMarker.openPopup();
     window._selectedStart = e.latlng;
   } else if(clickCount === 2){
     if(goalMarker) map.removeLayer(goalMarker);
-    goalMarker = L.marker(e.latlng).addTo(map).bindPopup('Goal');
+    goalMarker = L.circleMarker(e.latlng, {radius:8, color:'red', fillColor:'red', fillOpacity:0.8}).addTo(map).bindPopup('Goal');
     document.getElementById('goal').value = '';
     goalMarker.openPopup();
     window._selectedGoal = e.latlng;
@@ -87,9 +101,23 @@ async function requestRouteFromCoords(){
   // draw route on map
   if(routeLayer) map.removeLayer(routeLayer);
   const latlngs = data.path.map(p => [p.lat, p.lon]);
-  routeLayer = L.polyline(latlngs, {color:'blue', weight:4}).addTo(map);
-  map.fitBounds(routeLayer.getBounds(), {padding:[50,50]});
+  if(latlngs.length) {
+    routeLayer = L.polyline(latlngs, {color:'blue', weight:4}).addTo(map);
+    map.fitBounds(routeLayer.getBounds(), {padding:[50,50]});
+  }
 
   pathDiv.textContent = data.path.map(p => p.name).join(' → ');
   costDiv.textContent = 'Total cost: ' + data.cost;
+}
+
+function clearRoute(){
+  if(routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  if(startMarker) { map.removeLayer(startMarker); startMarker = null; }
+  if(goalMarker) { map.removeLayer(goalMarker); goalMarker = null; }
+  document.getElementById('path').textContent = '';
+  document.getElementById('cost').textContent = '';
+  // reset selects
+  document.getElementById('start').value = '';
+  document.getElementById('goal').value = '';
+  window._selectedStart = null; window._selectedGoal = null; clickCount = 0;
 }

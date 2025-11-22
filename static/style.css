@@ -1,11 +1,21 @@
 body { font-family: Arial, sans-serif; background:#f6f8fa; color:#222; }
 .container { max-width:800px; margin:40px auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
-.controls { display:flex; gap:10px; align-items:center; margin-bottom:20px; }
+#controls .container {}
+.controls { display:flex; gap:12px; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+.controls .selects { display:flex; gap:10px; align-items:center; }
 .controls label { display:flex; flex-direction:column; font-size:14px; }
-.controls select { min-width:150px; padding:6px; }
-button { padding:8px 12px; cursor:pointer; }
+.controls select { min-width:160px; padding:6px; border:1px solid #dfe6ee; border-radius:4px; }
+.controls .actions { display:flex; gap:8px; align-items:center; }
+button { padding:8px 12px; cursor:pointer; border-radius:6px; border:1px solid rgba(0,0,0,0.08); background:#fff; }
+.primary { background:#2563eb; color:#fff; border-color:transparent }
+.hint { font-size:13px; color:#6b7280; margin-left:6px; }
 #results { background:#f3f6f9; padding:12px; border-radius:6px; }
 #path { margin:8px 0; }
 
 /* map container adjustments */
 #map { border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+
+/* Legend */
+.map-legend { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,0.95); padding:8px 10px; border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.08); font-size:13px; }
+.map-legend .item { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+.legend-swatch { width:14px; height:14px; border-radius:4px; display:inline-block; }

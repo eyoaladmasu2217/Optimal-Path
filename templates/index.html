@@ -11,23 +11,28 @@
       <h1>Optimal Path (Addis Ababa)</h1>
 
       <div class="controls">
-        <label>Start
-          <select id="start"></select>
-        </label>
-        <label>Goal
-          <select id="goal"></select>
-        </label>
-        <label>Algorithm
-          <select id="algorithm">
-            <option value="astar">A* Search</option>
-            <option value="greedy">Greedy Best-First</option>
-            <option value="dfs">Depth-First Search</option>
-          </select>
-        </label>
-        <button id="run">Find Route</button>
-        <div style="margin-left:10px; font-size:13px">
-          <div>Or click map to choose Start (1st click) and Goal (2nd click)</div>
+        <div class="selects">
+          <label>Start
+            <select id="start"><option value="">(select or click map)</option></select>
+          </label>
+          <label>Goal
+            <select id="goal"><option value="">(select or click map)</option></select>
+          </label>
+          <label>Algorithm
+            <select id="algorithm">
+              <option value="astar">A* Search</option>
+              <option value="greedy">Greedy Best-First</option>
+              <option value="dfs">Depth-First Search</option>
+            </select>
+          </label>
         </div>
+
+        <div class="actions">
+          <button id="run" class="primary">Find Route</button>
+          <button id="clear">Clear</button>
+        </div>
+
+        <div class="hint">Click map to choose Start (1st click) and Goal (2nd click)</div>
       </div>
 
       <div id="map" style="height:400px; margin-bottom:12px;"></div>
