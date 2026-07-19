@@ -27,15 +27,29 @@ def a_star(graph, start, goal):
 
     graph: dict of node_id -> { 'lat', 'lon', 'neighbors': [{id, cost}, ...] }
     start, goal: node ids (strings)
-    returns: (path_list_of_ids, total_cost)
+    returns: (path_list_of_ids, total_cost, steps)
     """
     open_heap = []
     heapq.heappush(open_heap, (0, start))
     came_from = {start: None}
     g_score = {start: 0}
+    visited = set()
+    steps = []
 
     while open_heap:
         _, current = heapq.heappop(open_heap)
+        if current in visited:
+            continue
+        visited.add(current)
+
+        # Record visualizer step
+        steps.append({
+            'current': current,
+            'visited': list(visited),
+            'frontier': list(set(item[1] for item in open_heap)),
+            'came_from': came_from.copy()
+        })
+
         if current == goal:
             break
 
@@ -50,7 +64,7 @@ def a_star(graph, start, goal):
                 heapq.heappush(open_heap, (f, neighbor))
 
     if goal not in came_from:
-        return [], float('inf')
+        return [], float('inf'), steps
 
     path = []
     cur = goal
@@ -58,7 +72,7 @@ def a_star(graph, start, goal):
         path.append(cur)
         cur = came_from[cur]
     path.reverse()
-    return path, g_score.get(goal, float('inf'))
+    return path, g_score.get(goal, float('inf')), steps
 
 
 def greedy_best_first(graph, start, goal):
@@ -67,14 +81,24 @@ def greedy_best_first(graph, start, goal):
     heapq.heappush(open_heap, (_dist(graph.get(start, {}), graph.get(goal, {})), start))
     came_from = {start: None}
     visited = set()
+    steps = []
 
     while open_heap:
         _, current = heapq.heappop(open_heap)
-        if current == goal:
-            break
         if current in visited:
             continue
         visited.add(current)
+
+        # Record visualizer step
+        steps.append({
+            'current': current,
+            'visited': list(visited),
+            'frontier': list(set(item[1] for item in open_heap)),
+            'came_from': came_from.copy()
+        })
+
+        if current == goal:
+            break
 
         for edge in graph[current].get('neighbors', []):
             neighbor = edge['id']
@@ -84,7 +108,7 @@ def greedy_best_first(graph, start, goal):
             heapq.heappush(open_heap, (_dist(graph.get(neighbor, {}), graph.get(goal, {})), neighbor))
 
     if goal not in came_from:
-        return [], float('inf')
+        return [], float('inf'), steps
 
     path = []
     cur = goal
@@ -101,23 +125,59 @@ def greedy_best_first(graph, start, goal):
             if e['id'] == v:
                 total += e.get('cost', 1)
                 break
-    return path, total
+    return path, total, steps
 
 
 def dfs(graph, start, goal):
-    """Depth-first search (stack) returning first found path (not optimal)."""
-    stack = [(start, [start], 0)]
+    """Depth-first search (stack) returning first found path and visualizer steps."""
+    stack = [(start, None)]
+    came_from = {}
     visited = set()
+    steps = []
+    path_found = False
 
     while stack:
-        current, path, cost = stack.pop()
-        if current == goal:
-            return path, cost
+        current, parent = stack.pop()
         if current in visited:
             continue
         visited.add(current)
+        came_from[current] = parent
+
+        # frontier is the list of node IDs on the stack
+        frontier = [item[0] for item in stack]
+
+        steps.append({
+            'current': current,
+            'visited': list(visited),
+            'frontier': list(dict.fromkeys(frontier)),
+            'came_from': came_from.copy()
+        })
+
+        if current == goal:
+            path_found = True
+            break
+
         for edge in graph[current].get('neighbors', []):
             neighbor = edge['id']
-            stack.append((neighbor, path + [neighbor], cost + edge.get('cost', 1)))
+            if neighbor not in visited:
+                stack.append((neighbor, current))
 
-    return [], float('inf')
+    if not path_found or goal not in came_from:
+        return [], float('inf'), steps
+
+    path = []
+    cur = goal
+    while cur is not None:
+        path.append(cur)
+        cur = came_from[cur]
+    path.reverse()
+
+    # compute cost
+    total = 0
+    for i in range(len(path) - 1):
+        u = path[i]; v = path[i+1]
+        for e in graph[u].get('neighbors', []):
+            if e['id'] == v:
+                total += e.get('cost', 1)
+                break
+    return path, total, steps
