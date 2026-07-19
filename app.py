@@ -50,11 +50,11 @@ def route():
         return jsonify({'error': 'start or goal node not found'}), 400
 
     if algo == 'astar':
-        path, cost = algorithms.a_star(GRAPH, start_resolved, goal_resolved)
+        path, cost, steps = algorithms.a_star(GRAPH, start_resolved, goal_resolved)
     elif algo == 'greedy':
-        path, cost = algorithms.greedy_best_first(GRAPH, start_resolved, goal_resolved)
+        path, cost, steps = algorithms.greedy_best_first(GRAPH, start_resolved, goal_resolved)
     elif algo == 'dfs':
-        path, cost = algorithms.dfs(GRAPH, start_resolved, goal_resolved)
+        path, cost, steps = algorithms.dfs(GRAPH, start_resolved, goal_resolved)
     else:
         return jsonify({'error': 'unknown algorithm'}), 400
 
@@ -64,7 +64,7 @@ def route():
         for nid in path
     ]
 
-    return jsonify({'path': path_info, 'cost': cost})
+    return jsonify({'path': path_info, 'cost': cost, 'steps': steps})
 
 
 if __name__ == '__main__':
