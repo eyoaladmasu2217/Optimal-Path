@@ -1,7 +1,155 @@
 {
-  "piassa": { "name": "Piassa", "lat": 9.016, "lon": 38.746, "neighbors": [ {"id":"meskel","cost":2}, {"id":"kazanchis","cost":3} ] },
-  "meskel": { "name": "Meskel Square", "lat": 9.021, "lon": 38.747, "neighbors": [ {"id":"piassa","cost":2}, {"id":"kazanchis","cost":2}, {"id":"megenagna","cost":4} ] },
-  "kazanchis": { "name": "Kazanchis", "lat": 9.022, "lon": 38.749, "neighbors": [ {"id":"piassa","cost":3}, {"id":"meskel","cost":2}, {"id":"bole","cost":5} ] },
-  "megenagna": { "name": "Megenagna", "lat": 9.033, "lon": 38.761, "neighbors": [ {"id":"meskel","cost":4}, {"id":"bole","cost":3} ] },
-  "bole": { "name": "Bole", "lat": 9.010, "lon": 38.781, "neighbors": [ {"id":"kazanchis","cost":5}, {"id":"megenagna","cost":3} ] }
+  "piassa": {
+    "name": "Piassa",
+    "lat": 9.016,
+    "lon": 38.746,
+    "neighbors": [
+      { "id": "meskel", "cost": 2 },
+      { "id": "kazanchis", "cost": 3 },
+      { "id": "mexico", "cost": 3 },
+      { "id": "four_kilo", "cost": 2 }
+    ]
+  },
+  "meskel": {
+    "name": "Meskel Square",
+    "lat": 9.021,
+    "lon": 38.747,
+    "neighbors": [
+      { "id": "piassa", "cost": 2 },
+      { "id": "kazanchis", "cost": 2 },
+      { "id": "megenagna", "cost": 4 },
+      { "id": "mexico", "cost": 2 },
+      { "id": "gotera", "cost": 3 },
+      { "id": "kera", "cost": 3 }
+    ]
+  },
+  "kazanchis": {
+    "name": "Kazanchis",
+    "lat": 9.022,
+    "lon": 38.749,
+    "neighbors": [
+      { "id": "piassa", "cost": 3 },
+      { "id": "meskel", "cost": 2 },
+      { "id": "bole", "cost": 5 },
+      { "id": "four_kilo", "cost": 2 },
+      { "id": "twenty_two", "cost": 3 }
+    ]
+  },
+  "megenagna": {
+    "name": "Megenagna",
+    "lat": 9.033,
+    "lon": 38.761,
+    "neighbors": [
+      { "id": "meskel", "cost": 4 },
+      { "id": "bole", "cost": 3 },
+      { "id": "sholla", "cost": 2 },
+      { "id": "twenty_two", "cost": 2 }
+    ]
+  },
+  "bole": {
+    "name": "Bole",
+    "lat": 9.010,
+    "lon": 38.781,
+    "neighbors": [
+      { "id": "kazanchis", "cost": 5 },
+      { "id": "megenagna", "cost": 3 },
+      { "id": "gotera", "cost": 4 },
+      { "id": "twenty_two", "cost": 3 }
+    ]
+  },
+  "mexico": {
+    "name": "Mexico Square",
+    "lat": 9.011,
+    "lon": 38.736,
+    "neighbors": [
+      { "id": "piassa", "cost": 3 },
+      { "id": "meskel", "cost": 2 },
+      { "id": "lideta", "cost": 2 },
+      { "id": "sarbet", "cost": 3 }
+    ]
+  },
+  "lideta": {
+    "name": "Lideta",
+    "lat": 9.013,
+    "lon": 38.725,
+    "neighbors": [
+      { "id": "mexico", "cost": 2 },
+      { "id": "torhailoch", "cost": 3 }
+    ]
+  },
+  "torhailoch": {
+    "name": "Tor Hailoch",
+    "lat": 9.015,
+    "lon": 38.710,
+    "neighbors": [
+      { "id": "lideta", "cost": 3 }
+    ]
+  },
+  "sarbet": {
+    "name": "Sar Bet",
+    "lat": 8.995,
+    "lon": 38.729,
+    "neighbors": [
+      { "id": "mexico", "cost": 3 },
+      { "id": "gotera", "cost": 4 }
+    ]
+  },
+  "gotera": {
+    "name": "Gotera",
+    "lat": 8.988,
+    "lon": 38.755,
+    "neighbors": [
+      { "id": "sarbet", "cost": 4 },
+      { "id": "meskel", "cost": 3 },
+      { "id": "kera", "cost": 2 },
+      { "id": "bole", "cost": 4 }
+    ]
+  },
+  "kera": {
+    "name": "Kera",
+    "lat": 8.995,
+    "lon": 38.744,
+    "neighbors": [
+      { "id": "gotera", "cost": 2 },
+      { "id": "meskel", "cost": 3 }
+    ]
+  },
+  "four_kilo": {
+    "name": "4 Kilo",
+    "lat": 9.033,
+    "lon": 38.763,
+    "neighbors": [
+      { "id": "piassa", "cost": 2 },
+      { "id": "six_kilo", "cost": 2 },
+      { "id": "kazanchis", "cost": 2 }
+    ]
+  },
+  "six_kilo": {
+    "name": "6 Kilo",
+    "lat": 9.043,
+    "lon": 38.762,
+    "neighbors": [
+      { "id": "four_kilo", "cost": 2 },
+      { "id": "sholla", "cost": 3 }
+    ]
+  },
+  "sholla": {
+    "name": "Sholla",
+    "lat": 9.035,
+    "lon": 38.778,
+    "neighbors": [
+      { "id": "six_kilo", "cost": 3 },
+      { "id": "megenagna", "cost": 2 }
+    ]
+  },
+  "twenty_two": {
+    "name": "22 Mazoria",
+    "lat": 9.025,
+    "lon": 38.775,
+    "neighbors": [
+      { "id": "megenagna", "cost": 2 },
+      { "id": "bole", "cost": 3 },
+      { "id": "kazanchis", "cost": 3 }
+    ]
+  }
 }
