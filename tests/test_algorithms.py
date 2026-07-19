@@ -4,15 +4,26 @@ from graph import load_graph
 
 def test_algorithms_on_sample_graph():
     g = load_graph('data/addis_graph.json')
-    # simple path from piassa to bole should exist
-    path_a, cost_a = a_star(g, 'piassa', 'bole')
-    path_g, cost_g = greedy_best_first(g, 'piassa', 'bole')
-    path_d, cost_d = dfs(g, 'piassa', 'bole')
+    # Simple path from Piassa to Bole should exist
+    path_a, cost_a, steps_a = a_star(g, 'piassa', 'bole')
+    path_g, cost_g, steps_g = greedy_best_first(g, 'piassa', 'bole')
+    path_d, cost_d, steps_d = dfs(g, 'piassa', 'bole')
 
+    # Verify A* search results
     assert path_a[0] == 'piassa' and path_a[-1] == 'bole'
     assert cost_a != float('inf')
+    assert len(steps_a) > 0
+    assert 'current' in steps_a[0]
+    assert 'visited' in steps_a[0]
+    assert 'frontier' in steps_a[0]
+    assert 'came_from' in steps_a[0]
+
+    # Verify Greedy Best-First results
     assert path_g[0] == 'piassa' and path_g[-1] == 'bole'
     assert cost_g != float('inf')
-    # DFS may find a path but not necessarily optimal; ensure it finds any path
+    assert len(steps_g) > 0
+
+    # Verify DFS search results
     assert path_d[0] == 'piassa' and path_d[-1] == 'bole'
-*** End Patch
+    assert cost_d != float('inf')
+    assert len(steps_d) > 0
