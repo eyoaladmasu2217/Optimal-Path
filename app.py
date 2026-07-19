@@ -1,37 +1,39 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, Response
 from graph import load_graph, nearest_node
 import algorithms
+from typing import Dict, Any, Union, Optional
 
 app = Flask(__name__)
 
 # Load sample Addis Ababa graph
-GRAPH = load_graph('data/addis_graph.json')
+GRAPH: Dict[str, Any] = load_graph('data/addis_graph.json')
 
 
 @app.route('/')
-def index():
+def index() -> str:
+    """Render the main index page."""
     return render_template('index.html')
 
 
 @app.route('/api/nodes')
-def nodes():
-    # return node id and name for frontend selects
-    nodes = [
+def nodes() -> Response:
+    """Return node ID and name for dropdown selects."""
+    nodes_list = [
         { 'id': nid, 'name': data.get('name', nid) }
         for nid, data in GRAPH.items()
     ]
-    return jsonify(nodes)
+    return jsonify(nodes_list)
 
 
 @app.route('/api/route', methods=['POST'])
-def route():
-    body = request.get_json()
-    start = body.get('start')
-    goal = body.get('goal')
-    algo = body.get('algorithm', 'astar')
+def route() -> Union[Response, tuple]:
+    """Calculate the route using the specified pathfinding algorithm."""
+    body = request.get_json() or {}
+    start: Optional[Union[str, Dict[str, float]]] = body.get('start')
+    goal: Optional[Union[str, Dict[str, float]]] = body.get('goal')
+    algo: str = body.get('algorithm', 'astar')
 
-    # allow start/goal to be provided as coordinates {lat, lon} or as node id
-    def resolve(node_spec):
+    def resolve(node_spec: Optional[Union[str, Dict[str, Any]]]) -> Optional[str]:
         if isinstance(node_spec, dict):
             lat = node_spec.get('lat')
             lon = node_spec.get('lon')
@@ -60,7 +62,12 @@ def route():
 
     # convert path of ids to node info
     path_info = [
-        { 'id': nid, 'name': GRAPH[nid].get('name'), 'lat': GRAPH[nid].get('lat'), 'lon': GRAPH[nid].get('lon') }
+        {
+            'id': nid,
+            'name': GRAPH[nid].get('name'),
+            'lat': GRAPH[nid].get('lat'),
+            'lon': GRAPH[nid].get('lon')
+        }
         for nid in path
     ]
 

@@ -1,13 +1,16 @@
 import math
 import heapq
+from typing import Dict, Any, List, Tuple, Set
 
 
-def _haversine(a, b):
-    """Return approximate distance in meters between two points (dicts with 'lat' and 'lon')."""
+def _haversine(a: Dict[str, Any], b: Dict[str, Any]) -> float:
+    """Return approximate distance in meters between two points (dicts with 'lat' and 'lon')
+    using the Haversine formula.
+    """
     lat1, lon1 = a.get('lat'), a.get('lon')
     lat2, lon2 = b.get('lat'), b.get('lon')
     if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
-        return 0
+        return 0.0
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -18,23 +21,24 @@ def _haversine(a, b):
     return R * c
 
 
-def _dist(a, b):
+def _dist(a: Dict[str, Any], b: Dict[str, Any]) -> float:
+    """Calculate distance between two nodes."""
     return _haversine(a, b)
 
 
-def a_star(graph, start, goal):
-    """A* search on graph.
+def a_star(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
+    """A* search algorithm on graph.
 
     graph: dict of node_id -> { 'lat', 'lon', 'neighbors': [{id, cost}, ...] }
     start, goal: node ids (strings)
-    returns: (path_list_of_ids, total_cost, steps)
+    returns: Tuple of (path_list_of_ids, total_cost, trace_steps)
     """
-    open_heap = []
-    heapq.heappush(open_heap, (0, start))
-    came_from = {start: None}
-    g_score = {start: 0}
-    visited = set()
-    steps = []
+    open_heap: List[Tuple[float, str]] = []
+    heapq.heappush(open_heap, (0.0, start))
+    came_from: Dict[str, Any] = {start: None}
+    g_score: Dict[str, float] = {start: 0.0}
+    visited: Set[str] = set()
+    steps: List[Dict[str, Any]] = []
 
     while open_heap:
         _, current = heapq.heappop(open_heap)
@@ -55,7 +59,7 @@ def a_star(graph, start, goal):
 
         for edge in graph[current].get('neighbors', []):
             neighbor = edge['id']
-            cost = edge.get('cost', 1)
+            cost = edge.get('cost', 1.0)
             tentative_g = g_score[current] + cost
             if tentative_g < g_score.get(neighbor, float('inf')):
                 came_from[neighbor] = current
@@ -66,7 +70,7 @@ def a_star(graph, start, goal):
     if goal not in came_from:
         return [], float('inf'), steps
 
-    path = []
+    path: List[str] = []
     cur = goal
     while cur is not None:
         path.append(cur)
@@ -75,13 +79,13 @@ def a_star(graph, start, goal):
     return path, g_score.get(goal, float('inf')), steps
 
 
-def greedy_best_first(graph, start, goal):
+def greedy_best_first(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
     """Greedy best-first search using heuristic only (not guaranteed optimal)."""
-    open_heap = []
+    open_heap: List[Tuple[float, str]] = []
     heapq.heappush(open_heap, (_dist(graph.get(start, {}), graph.get(goal, {})), start))
-    came_from = {start: None}
-    visited = set()
-    steps = []
+    came_from: Dict[str, Any] = {start: None}
+    visited: Set[str] = set()
+    steps: List[Dict[str, Any]] = []
 
     while open_heap:
         _, current = heapq.heappop(open_heap)
@@ -110,7 +114,7 @@ def greedy_best_first(graph, start, goal):
     if goal not in came_from:
         return [], float('inf'), steps
 
-    path = []
+    path: List[str] = []
     cur = goal
     while cur is not None:
         path.append(cur)
@@ -118,22 +122,23 @@ def greedy_best_first(graph, start, goal):
     path.reverse()
 
     # compute actual path cost by summing edge costs
-    total = 0
+    total = 0.0
     for i in range(len(path) - 1):
-        u = path[i]; v = path[i+1]
+        u = path[i]
+        v = path[i+1]
         for e in graph[u].get('neighbors', []):
             if e['id'] == v:
-                total += e.get('cost', 1)
+                total += e.get('cost', 1.0)
                 break
     return path, total, steps
 
 
-def dfs(graph, start, goal):
+def dfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
     """Depth-first search (stack) returning first found path and visualizer steps."""
-    stack = [(start, None)]
-    came_from = {}
-    visited = set()
-    steps = []
+    stack: List[Tuple[str, Any]] = [(start, None)]
+    came_from: Dict[str, Any] = {}
+    visited: Set[str] = set()
+    steps: List[Dict[str, Any]] = []
     path_found = False
 
     while stack:
@@ -165,7 +170,7 @@ def dfs(graph, start, goal):
     if not path_found or goal not in came_from:
         return [], float('inf'), steps
 
-    path = []
+    path: List[str] = []
     cur = goal
     while cur is not None:
         path.append(cur)
@@ -173,11 +178,12 @@ def dfs(graph, start, goal):
     path.reverse()
 
     # compute cost
-    total = 0
+    total = 0.0
     for i in range(len(path) - 1):
-        u = path[i]; v = path[i+1]
+        u = path[i]
+        v = path[i+1]
         for e in graph[u].get('neighbors', []):
             if e['id'] == v:
-                total += e.get('cost', 1)
+                total += e.get('cost', 1.0)
                 break
     return path, total, steps
