@@ -1,50 +1,202 @@
 <!doctype html>
-<html>
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <title>Optimal Path - Addis Ababa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Addis RouteFinder - Pathfinding Search Visualizer</title>
+    <meta name="description" content="Interactive search algorithm visualizer on Addis Ababa city graph, featuring A*, Greedy Best-First, and DFS comparisons." />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="/static/style.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+e2z8gkP9w0bYfJ+3zY1kGQhQ2KtY3/8m+9ZQ3qR0=" crossorigin=""/>
   </head>
   <body>
-    <div class="container">
-      <h1>Optimal Path (Addis Ababa)</h1>
-
-      <div class="controls">
-        <div class="selects">
-          <label>Start
-            <select id="start"><option value="">(select or click map)</option></select>
-          </label>
-          <label>Goal
-            <select id="goal"><option value="">(select or click map)</option></select>
-          </label>
-          <label>Algorithm
-            <select id="algorithm">
-              <option value="astar">A* Search</option>
-              <option value="greedy">Greedy Best-First</option>
-              <option value="dfs">Depth-First Search</option>
-            </select>
-          </label>
+    <div class="app-container">
+      
+      <!-- Premium Navbar / Header -->
+      <header class="app-header">
+        <div class="header-logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6" />
+            <circle cx="12" cy="12" r="10" stroke-dasharray="4 4" />
+          </svg>
+          <h1>Addis <span class="highlight">RouteFinder</span></h1>
         </div>
-
-        <div class="actions">
-          <button id="run" class="primary">Find Route</button>
-          <button id="clear">Clear</button>
+        
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-button" aria-label="Toggle Dark/Light Mode">
+            <svg id="theme-sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+            <svg id="theme-moon-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
         </div>
+      </header>
 
-        <div class="hint">Click map to choose Start (1st click) and Goal (2nd click)</div>
-      </div>
+      <!-- Main Layout Dashboard -->
+      <main class="dashboard-grid">
+        
+        <!-- Sidebar Controls -->
+        <section class="sidebar-panel">
+          
+          <!-- Routing Settings Card -->
+          <div class="card glass">
+            <h2>Search Settings</h2>
+            <div class="control-group">
+              <label for="start">Start Location</label>
+              <select id="start">
+                <option value="">(Select or Click Map)</option>
+              </select>
+            </div>
+            
+            <div class="control-group">
+              <label for="goal">Goal Location</label>
+              <select id="goal">
+                <option value="">(Select or Click Map)</option>
+              </select>
+            </div>
+            
+            <div class="control-group">
+              <label for="algorithm">Search Algorithm</label>
+              <select id="algorithm">
+                <option value="astar">A* Search (Optimal & Guided)</option>
+                <option value="greedy">Greedy Best-First (Heuristic-Only)</option>
+                <option value="dfs">Depth-First Search (Uninformed)</option>
+              </select>
+            </div>
+            
+            <div class="actions-row">
+              <button id="run" class="btn btn-primary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Find Route
+              </button>
+              <button id="clear" class="btn btn-secondary">Clear</button>
+            </div>
+            <div class="hint">💡 <em>Click anywhere on the map to set Start (1st click) and Goal (2nd click)</em></div>
+          </div>
 
-      <div id="map" style="height:400px; margin-bottom:12px;"></div>
+          <!-- Step-by-Step Interactive Debugger Card -->
+          <div class="card glass debugger-card">
+            <h2>Visual Debugger</h2>
+            
+            <div class="debugger-status">
+              Status: <span id="debug-status-text" class="status-badge">Idle</span>
+              <span id="step-indicator" class="step-badge" style="display:none;">Step 0/0</span>
+            </div>
 
-      <div id="results">
-        <h2>Result</h2>
-        <div id="path"></div>
-        <div id="cost"></div>
-      </div>
+            <div class="debugger-controls">
+              <button id="btn-reset" class="debug-btn" title="Reset Search" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2.5 2v6h6M21.5 22v-6h-6" />
+                  <path d="M22 11.5A10 10 0 1 0 9.5 20.1l.5.4" />
+                </svg>
+              </button>
+              <button id="btn-prev" class="debug-btn" title="Step Backward" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="19 20 9 12 19 4 19 20" />
+                  <line x1="5" y1="5" x2="5" y2="19" />
+                </svg>
+              </button>
+              <button id="btn-play-pause" class="debug-btn play-active" title="Play Animation" disabled>
+                <!-- Play Icon -->
+                <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                <!-- Pause Icon -->
+                <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </svg>
+              </button>
+              <button id="btn-next" class="debug-btn" title="Step Forward" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 4 15 12 5 20 5 4" />
+                  <line x1="19" y1="5" x2="19" y2="19" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="speed-control">
+              <div class="speed-labels">
+                <span>Animation Speed:</span>
+                <span id="speed-value">Medium</span>
+              </div>
+              <input type="range" id="speed-slider" min="1" max="4" value="2" class="slider" />
+            </div>
+          </div>
+
+        </section>
+        
+        <!-- Map & Results Section -->
+        <section class="main-display">
+          <!-- Interactive Map Container -->
+          <div class="map-wrapper glass">
+            <div id="map"></div>
+          </div>
+
+          <!-- Comparison & Performance Metrics Dashboard -->
+          <div class="card glass metrics-panel">
+            <h2>Algorithm Performance Comparison</h2>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Algorithm</th>
+                    <th>Path Cost (meters)</th>
+                    <th>Visited Nodes (Explored)</th>
+                    <th>Visualization Steps</th>
+                    <th>Execution Time</th>
+                  </tr>
+                </thead>
+                <tbody id="metrics-table-body">
+                  <tr class="placeholder-row">
+                    <td colspan="5">No search performed yet. Click Find Route to compare algorithms.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Final Route Information Card -->
+          <div id="results" class="card glass results-card" style="display:none;">
+            <h2>Route Details</h2>
+            <div class="results-grid">
+              <div class="metric-item">
+                <span class="label">Total Distance:</span>
+                <strong id="cost-detail">-</strong>
+              </div>
+              <div class="metric-item">
+                <span class="label">Total Nodes:</span>
+                <strong id="nodes-detail">-</strong>
+              </div>
+            </div>
+            <div class="path-details">
+              <span class="label">Path Sequence:</span>
+              <div id="path" class="path-sequence"></div>
+            </div>
+          </div>
+          
+        </section>
+
+      </main>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j8kGkE6H6Y3z7+6k1S6s3n8p2Y5rj5oXf3zB0+k=" crossorigin=""></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Custom Application Logic -->
     <script src="/static/app.js"></script>
   </body>
 </html>
