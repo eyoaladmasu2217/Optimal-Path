@@ -241,3 +241,49 @@ def bfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float,
                 total += e.get('cost', 1.0)
                 break
     return path, total, steps
+
+
+def dijkstra(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
+    """Dijkstra's algorithm — finds optimal path using edge costs only (no heuristic)."""
+    open_heap: List[Tuple[float, str]] = []
+    heapq.heappush(open_heap, (0.0, start))
+    came_from: Dict[str, Any] = {start: None}
+    g_score: Dict[str, float] = {start: 0.0}
+    visited: Set[str] = set()
+    steps: List[Dict[str, Any]] = []
+
+    while open_heap:
+        _, current = heapq.heappop(open_heap)
+        if current in visited:
+            continue
+        visited.add(current)
+
+        steps.append({
+            'current': current,
+            'visited': list(visited),
+            'frontier': list(set(item[1] for item in open_heap)),
+            'came_from': came_from.copy()
+        })
+
+        if current == goal:
+            break
+
+        for edge in graph[current].get('neighbors', []):
+            neighbor = edge['id']
+            cost = edge.get('cost', 1.0)
+            tentative_g = g_score[current] + cost
+            if tentative_g < g_score.get(neighbor, float('inf')):
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g
+                heapq.heappush(open_heap, (tentative_g, neighbor))
+
+    if goal not in came_from:
+        return [], float('inf'), steps
+
+    path: List[str] = []
+    cur = goal
+    while cur is not None:
+        path.append(cur)
+        cur = came_from[cur]
+    path.reverse()
+    return path, g_score.get(goal, float('inf')), steps
