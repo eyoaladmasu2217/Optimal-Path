@@ -1,5 +1,6 @@
 import math
 import heapq
+from collections import deque
 from typing import Dict, Any, List, Tuple, Set
 
 
@@ -182,6 +183,59 @@ def dfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float,
     for i in range(len(path) - 1):
         u = path[i]
         v = path[i+1]
+        for e in graph[u].get('neighbors', []):
+            if e['id'] == v:
+                total += e.get('cost', 1.0)
+                break
+    return path, total, steps
+
+
+def bfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
+    """Breadth-first search — explores layer by layer, finds shortest path by hop count."""
+    queue: deque = deque([(start, None)])
+    came_from: Dict[str, Any] = {}
+    visited: Set[str] = set()
+    steps: List[Dict[str, Any]] = []
+    path_found = False
+
+    while queue:
+        current, parent = queue.popleft()
+        if current in visited:
+            continue
+        visited.add(current)
+        came_from[current] = parent
+
+        frontier = [item[0] for item in queue]
+        steps.append({
+            'current': current,
+            'visited': list(visited),
+            'frontier': list(dict.fromkeys(frontier)),
+            'came_from': came_from.copy()
+        })
+
+        if current == goal:
+            path_found = True
+            break
+
+        for edge in graph[current].get('neighbors', []):
+            neighbor = edge['id']
+            if neighbor not in visited:
+                queue.append((neighbor, current))
+
+    if not path_found or goal not in came_from:
+        return [], float('inf'), steps
+
+    path: List[str] = []
+    cur = goal
+    while cur is not None:
+        path.append(cur)
+        cur = came_from[cur]
+    path.reverse()
+
+    total = 0.0
+    for i in range(len(path) - 1):
+        u = path[i]
+        v = path[i + 1]
         for e in graph[u].get('neighbors', []):
             if e['id'] == v:
                 total += e.get('cost', 1.0)
