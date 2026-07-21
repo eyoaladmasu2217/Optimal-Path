@@ -27,6 +27,29 @@ def _dist(a: Dict[str, Any], b: Dict[str, Any]) -> float:
     return _haversine(a, b)
 
 
+def _compute_path_cost(graph: Dict[str, Any], path: List[str]) -> float:
+    """Sum edge costs along a path of node IDs."""
+    total = 0.0
+    for i in range(len(path) - 1):
+        u, v = path[i], path[i + 1]
+        for e in graph[u].get('neighbors', []):
+            if e['id'] == v:
+                total += e.get('cost', 1.0)
+                break
+    return total
+
+
+def _reconstruct_path(came_from: Dict[str, Any], goal: str) -> List[str]:
+    """Rebuild node ID path from came_from map ending at goal."""
+    path: List[str] = []
+    cur: Any = goal
+    while cur is not None:
+        path.append(cur)
+        cur = came_from[cur]
+    path.reverse()
+    return path
+
+
 def a_star(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float, List[Dict[str, Any]]]:
     """A* search algorithm on graph.
 
@@ -71,12 +94,7 @@ def a_star(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], flo
     if goal not in came_from:
         return [], float('inf'), steps
 
-    path: List[str] = []
-    cur = goal
-    while cur is not None:
-        path.append(cur)
-        cur = came_from[cur]
-    path.reverse()
+    path = _reconstruct_path(came_from, goal)
     return path, g_score.get(goal, float('inf')), steps
 
 
@@ -115,22 +133,8 @@ def greedy_best_first(graph: Dict[str, Any], start: str, goal: str) -> Tuple[Lis
     if goal not in came_from:
         return [], float('inf'), steps
 
-    path: List[str] = []
-    cur = goal
-    while cur is not None:
-        path.append(cur)
-        cur = came_from[cur]
-    path.reverse()
-
-    # compute actual path cost by summing edge costs
-    total = 0.0
-    for i in range(len(path) - 1):
-        u = path[i]
-        v = path[i+1]
-        for e in graph[u].get('neighbors', []):
-            if e['id'] == v:
-                total += e.get('cost', 1.0)
-                break
+    path = _reconstruct_path(came_from, goal)
+    total = _compute_path_cost(graph, path)
     return path, total, steps
 
 
@@ -171,22 +175,8 @@ def dfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float,
     if not path_found or goal not in came_from:
         return [], float('inf'), steps
 
-    path: List[str] = []
-    cur = goal
-    while cur is not None:
-        path.append(cur)
-        cur = came_from[cur]
-    path.reverse()
-
-    # compute cost
-    total = 0.0
-    for i in range(len(path) - 1):
-        u = path[i]
-        v = path[i+1]
-        for e in graph[u].get('neighbors', []):
-            if e['id'] == v:
-                total += e.get('cost', 1.0)
-                break
+    path = _reconstruct_path(came_from, goal)
+    total = _compute_path_cost(graph, path)
     return path, total, steps
 
 
@@ -225,21 +215,8 @@ def bfs(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], float,
     if not path_found or goal not in came_from:
         return [], float('inf'), steps
 
-    path: List[str] = []
-    cur = goal
-    while cur is not None:
-        path.append(cur)
-        cur = came_from[cur]
-    path.reverse()
-
-    total = 0.0
-    for i in range(len(path) - 1):
-        u = path[i]
-        v = path[i + 1]
-        for e in graph[u].get('neighbors', []):
-            if e['id'] == v:
-                total += e.get('cost', 1.0)
-                break
+    path = _reconstruct_path(came_from, goal)
+    total = _compute_path_cost(graph, path)
     return path, total, steps
 
 
@@ -280,10 +257,5 @@ def dijkstra(graph: Dict[str, Any], start: str, goal: str) -> Tuple[List[str], f
     if goal not in came_from:
         return [], float('inf'), steps
 
-    path: List[str] = []
-    cur = goal
-    while cur is not None:
-        path.append(cur)
-        cur = came_from[cur]
-    path.reverse()
+    path = _reconstruct_path(came_from, goal)
     return path, g_score.get(goal, float('inf')), steps
