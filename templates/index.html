@@ -73,12 +73,17 @@
               <label for="algorithm">Search Algorithm</label>
               <select id="algorithm">
                 <option value="astar">A* Search (Optimal & Guided)</option>
+                <option value="dijkstra">Dijkstra (Optimal, No Heuristic)</option>
                 <option value="greedy">Greedy Best-First (Heuristic-Only)</option>
+                <option value="bfs">Breadth-First Search (Layer-by-Layer)</option>
                 <option value="dfs">Depth-First Search (Uninformed)</option>
               </select>
             </div>
             
             <div class="actions-row">
+              <button id="swap" class="btn btn-secondary" title="Swap Start and Goal">
+                ⇄ Swap
+              </button>
               <button id="run" class="btn btn-primary">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 Find Route
