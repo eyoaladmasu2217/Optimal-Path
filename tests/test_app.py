@@ -22,3 +22,15 @@ def test_route_returns_path_and_trace():
     assert body['path'][0]['id'] == 'piassa'
     assert body['path'][-1]['id'] == 'bole'
     assert body['steps']
+
+
+def test_route_rejects_invalid_coordinates():
+    client = app.test_client()
+    response = client.post('/api/route', json={
+        'start': {'lat': 'unknown', 'lon': 38.75},
+        'goal': 'bole',
+        'algorithm': 'astar',
+    })
+
+    assert response.status_code == 400
+    assert 'invalid coordinates' in response.get_json()['error']
