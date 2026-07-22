@@ -358,6 +358,11 @@ document.getElementById('swap').addEventListener('click', () => {
 });
 
 document.getElementById('run').addEventListener('click', findRoute);
+document.addEventListener('keydown', event => {
+  if (event.key === 'Enter' && (event.target.tagName === 'SELECT' || event.target.tagName === 'BODY')) {
+    findRoute();
+  }
+});
 document.getElementById('clear').addEventListener('click', clearRoute);
 fetchNodes();
 
