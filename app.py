@@ -85,7 +85,10 @@ def _resolve_node(node_spec: Optional[Union[str, Dict[str, Any]]]) -> Optional[s
         lon = node_spec.get('lon')
         if lat is None or lon is None:
             return None
-        return nearest_node(GRAPH, float(lat), float(lon))
+        try:
+            return nearest_node(GRAPH, float(lat), float(lon))
+        except (TypeError, ValueError):
+            return None
     return node_spec
 
 
