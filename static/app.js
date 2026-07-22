@@ -12,7 +12,8 @@ const ALGO_LABELS = {
   dfs: 'DFS'
 };
 
-const routeHistory = [];
+const HISTORY_KEY = 'addis-route-history';
+const routeHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
 let currentRoute = null;
 
 function nodeName(nodeSpec) {
@@ -138,6 +139,7 @@ function saveRoute(data, payload) {
   };
   routeHistory.unshift(route);
   routeHistory.splice(6);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(routeHistory));
   renderHistory();
 }
 
@@ -194,6 +196,7 @@ document.getElementById('download-route').addEventListener('click', () => {
 
 document.getElementById('clear-history').addEventListener('click', () => {
   routeHistory.length = 0;
+  localStorage.removeItem(HISTORY_KEY);
   renderHistory();
 });
 
