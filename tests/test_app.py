@@ -34,3 +34,15 @@ def test_route_rejects_invalid_coordinates():
 
     assert response.status_code == 400
     assert 'invalid coordinates' in response.get_json()['error']
+
+
+def test_route_rejects_unknown_algorithm():
+    client = app.test_client()
+    response = client.post('/api/route', json={
+        'start': 'piassa',
+        'goal': 'bole',
+        'algorithm': 'unknown',
+    })
+
+    assert response.status_code == 400
+    assert response.get_json()['error'] == 'unknown algorithm'
