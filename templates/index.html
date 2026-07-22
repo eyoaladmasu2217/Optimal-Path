@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
+    <div id="app-notice" class="app-notice" role="status" aria-live="polite"></div>
     <div class="app-container">
       
       <!-- Premium Navbar / Header -->
@@ -177,7 +178,17 @@
 
           <!-- Final Route Information Card -->
           <div id="results" class="card glass results-card" style="display:none;">
-            <h2>Route Details</h2>
+            <div class="section-heading">
+              <h2>Route Details</h2>
+              <div class="route-actions">
+                <button id="copy-route" class="icon-button" type="button" title="Copy route" aria-label="Copy route" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+                <button id="download-route" class="icon-button" type="button" title="Download route" aria-label="Download route" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>
+                </button>
+              </div>
+            </div>
             <div class="results-grid">
               <div class="metric-item">
                 <span class="label">Total Distance:</span>
@@ -191,6 +202,16 @@
             <div class="path-details">
               <span class="label">Path Sequence:</span>
               <div id="path" class="path-sequence"></div>
+            </div>
+          </div>
+
+          <div class="card glass history-card">
+            <div class="section-heading">
+              <h2>Recent Routes</h2>
+              <button id="clear-history" class="text-button" type="button">Clear history</button>
+            </div>
+            <div id="route-history" class="route-history" aria-live="polite">
+              <p class="empty-state">Your completed routes will appear here.</p>
             </div>
           </div>
           

@@ -28,7 +28,12 @@ def index() -> str:
 def nodes() -> Response:
     """Return node ID and name for dropdown selects."""
     nodes_list = [
-        { 'id': nid, 'name': data.get('name', nid) }
+        {
+            'id': nid,
+            'name': data.get('name', nid),
+            'lat': data.get('lat'),
+            'lon': data.get('lon'),
+        }
         for nid, data in GRAPH.items()
     ]
     return jsonify(nodes_list)
