@@ -46,3 +46,15 @@ def test_route_rejects_unknown_algorithm():
 
     assert response.status_code == 400
     assert response.get_json()['error'] == 'unknown algorithm'
+
+
+def test_compare_returns_all_algorithms():
+    client = app.test_client()
+    response = client.post('/api/compare', json={
+        'start': 'piassa',
+        'goal': 'bole',
+    })
+
+    algorithms = {result['algorithm'] for result in response.get_json()['results']}
+    assert response.status_code == 200
+    assert algorithms == {'astar', 'dijkstra', 'greedy', 'bfs', 'dfs'}
