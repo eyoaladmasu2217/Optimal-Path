@@ -76,6 +76,11 @@ html[data-theme="light"] {
   padding: 0;
 }
 
+:focus-visible {
+  outline: 2px solid var(--primary-hover);
+  outline-offset: 3px;
+}
+
 body {
   font-family: var(--font-main);
   background-color: var(--bg-app);
